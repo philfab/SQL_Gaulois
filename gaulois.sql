@@ -60,7 +60,7 @@
 	FROM personnage p
 	INNER JOIN prendre_casque pc ON p.id_personnage = pc.id_personnage
 	INNER JOIN bataille b ON b.id_bataille = pc.id_bataille
-	WHERE b.nom_bataille = "Bataille du village gaulois"
+	WHERE b.id_bataille = 1
 	GROUP BY p.id_personnage
 	ORDER BY NbCasques DESC
 
@@ -98,10 +98,10 @@
 
 13. "Nom du / des lieu(x) possédant le plus d'habitants, en dehors du village gaulois." :
 
-	SELECT l.nom_lieu, COUNT(p.id_lieu) as NbHabitants
+    SELECT l.nom_lieu, COUNT(p.id_lieu) as NbHabitants
 	FROM lieu l
 	INNER JOIN personnage p ON l.id_lieu = p.id_lieu
-	WHERE l.nom_lieu != "Village gaulois"
+	WHERE l.id_lieu != 1
 	GROUP BY p.id_lieu
 	ORDER BY NbHabitants DESC
 	
@@ -114,15 +114,6 @@
 	
 15. "Nom du / des personnages qui n'ont pas le droit de boire de la potion 'Magique'." : 
 
-	SELECT p.nom_personnage 
-	FROM personnage p 
-	WHERE p.nom_personnage NOT IN (
-		SELECT p.nom_personnage
-		FROM personnage p
-		INNER JOIN autoriser_boire ab ON p.id_personnage = ab.id_personnage
-		INNER JOIN potion po ON ab.id_potion = po.id_potion
-		WHERE po.nom_potion = 'Magique'
-	)
-	
-	"On sélectionne d'abord ceux qui ont le droit de boire la potion (id=1) et ensuite
-	 on garde ceux qui ne font pas partie de cet ensemble". 
+	SELECT nom_personnage 
+	FROM personnage 
+	WHERE id_personnage NOT IN (SELECT id_personnage FROM autoriser_boire WHERE id_potion = 1)
