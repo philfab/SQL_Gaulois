@@ -117,3 +117,27 @@
 	SELECT nom_personnage 
 	FROM personnage 
 	WHERE id_personnage NOT IN (SELECT id_personnage FROM autoriser_boire WHERE id_potion = 1)
+
+
+A."Ajoutez le personnage suivant : Champdeblix, agriculteur résidant à la ferme Hantassion de Rotomagus." :
+
+	INSERT INTO personnage VALUES (45,'Champdeblix','Ferme Hantassion','indisponible.jpg', 6, 12);
+	
+B."Autorisez Bonemine à boire de la potion magique, elle est jalouse d'Iélosubmarine..." :
+
+	INSERT INTO autoriser_boire VALUES (1, 12);
+	
+C. "Supprimez les casques grecs qui n'ont jamais été pris lors d'une bataille." :
+
+	DELETE 
+	FROM casque
+	WHERE (casque.id_type_casque = 2) AND (casque.id_casque NOT IN 
+	(SELECT prendre_casque.id_casque FROM prendre_casque))
+
+D. "Modifiez l'adresse de Zérozérosix : il a été mis en prison à Condate."
+
+	UPDATE personnage
+	SET adresse_personnage = "Prison", id_lieu = 9
+	WHERE personnage.id_personnage = 23
+	
+
