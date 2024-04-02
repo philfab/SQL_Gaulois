@@ -141,3 +141,8 @@ D. "Modifiez l'adresse de Zérozérosix : il a été mis en prison à Condate."
 	WHERE personnage.id_personnage = 23
 	
 
+E. "La potion 'Soupe' ne doit plus contenir de persil." :
+
+    DELETE 
+	FROM composer 
+	WHERE (id_ingredient = 19 AND id_potion = 9)
