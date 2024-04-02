@@ -56,13 +56,20 @@
 	
 8.  "Nom du ou des personnages qui ont pris le plus de casques dans la bataille 'Bataille du village gaulois'." :
    
-    SELECT p.nom_personnage , SUM(pc.qte) as NbCasques
+	SELECT p.nom_personnage, SUM(pc.qte) as NbCasques
 	FROM personnage p
 	INNER JOIN prendre_casque pc ON p.id_personnage = pc.id_personnage
 	INNER JOIN bataille b ON b.id_bataille = pc.id_bataille
-	WHERE b.id_bataille = 1
-	GROUP BY p.id_personnage
-	ORDER BY NbCasques DESC
+	WHERE b.id_bataille = 1 /* uniquement la "Bataille du village gaulois"*/
+	GROUP BY p.id_personnage /*Regroupe résultats par perso, agrégation (ici,somme) des casques pris par chaque perso*/
+	/*filtre pour ne garder que les persos dont le total de casques pris est au moins = au total le plus élevé de tous les persos, seuls les persos avec le plus nombre de casques sont selec (HAVING = WHERE + function agregation)
+	SUM et pas MAX car il peut y avoir des casques de type diff pris par un perso*/
+	HAVING SUM(pc.qte) >= ALL (
+		SELECT SUM(pc.qte)
+		FROM prendre_casque pc
+		INNER JOIN bataille b ON b.id_bataille = pc.id_bataille
+		WHERE b.id_bataille = 1
+		GROUP BY pc.id_personnage)
 
 9.  "Nom des personnages et leur quantité de potion bue (en les classant du plus grand buveur au plus petit)." :
     
@@ -74,11 +81,16 @@
 	
 10. "Nom de la bataille où le nombre de casques pris a été le plus important." :
     
-    SELECT b.nom_bataille, SUM(pc.qte) as nbCasques
+	SELECT b.nom_bataille, SUM(pc.qte) AS nbCasques
 	FROM bataille b
 	INNER JOIN prendre_casque pc ON b.id_bataille = pc.id_bataille
 	GROUP BY b.id_bataille
-	ORDER BY nbCasques DESC
+	/*idem à l'exo 8 avec condition sur la bataille en moins*/
+	HAVING SUM(pc.qte) >= ALL (
+		SELECT SUM(pc.qte)
+		FROM prendre_casque pc
+		GROUP BY pc.id_bataille
+	)
 
 11. "Combien existe-t-il de casques de chaque type et quel est leur coût total ? (classés par nombre décroissant)" :
 
@@ -98,12 +110,19 @@
 
 13. "Nom du / des lieu(x) possédant le plus d'habitants, en dehors du village gaulois." :
 
-    SELECT l.nom_lieu, COUNT(p.id_lieu) as NbHabitants
+	SELECT l.nom_lieu, COUNT(p.id_personnage) as NbHabitants
 	FROM lieu l
 	INNER JOIN personnage p ON l.id_lieu = p.id_lieu
 	WHERE l.id_lieu != 1
-	GROUP BY p.id_lieu
-	ORDER BY NbHabitants DESC
+	GROUP BY l.id_lieu
+	/*idem à l'exo 10 avec COUNT: count compte les lignes tandis que sum additionne les valeurs des colonnes (int)*/
+	HAVING COUNT(p.id_personnage) >= ALL (
+		SELECT COUNT(p.id_personnage)
+		FROM personnage p
+		INNER JOIN lieu l ON p.id_lieu = l.id_lieu
+		WHERE l.id_lieu != 1
+		GROUP BY l.id_lieu
+    )
 	
 14. "Nom des personnages qui n'ont jamais bu aucune potion." :
 
@@ -116,7 +135,11 @@
 
 	SELECT nom_personnage 
 	FROM personnage 
-	WHERE id_personnage NOT IN (SELECT id_personnage FROM autoriser_boire WHERE id_potion = 1)
+	WHERE id_personnage NOT IN (
+	 SELECT id_personnage 
+	 FROM autoriser_boire
+	 WHERE id_potion = 1
+	 )
 
 
 A."Ajoutez le personnage suivant : Champdeblix, agriculteur résidant à la ferme Hantassion de Rotomagus." :
