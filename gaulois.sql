@@ -67,14 +67,14 @@
 	
 8.  "Nom du ou des personnages qui ont pris le plus de casques dans la bataille 'Bataille du village gaulois'." :
    
-    SELECT p.nom_personnage , COUNT(pc.qte) as NbCasques
+    SELECT p.nom_personnage , SUM(pc.qte) as NbCasques
 	FROM personnage p
 	INNER JOIN prendre_casque pc ON p.id_personnage = pc.id_personnage
 	INNER JOIN bataille b ON b.id_bataille = pc.id_bataille
 	WHERE b.nom_bataille = "Bataille du village gaulois"
 	GROUP BY p.nom_personnage
 	ORDER BY NbCasques DESC
-	
+
 9.  "Nom des personnages et leur quantité de potion bue (en les classant du plus grand buveur au plus petit)." :
     
     SELECT p.nom_personnage, SUM(b.dose_boire) as NBpotionBue
