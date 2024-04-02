@@ -22,13 +22,6 @@
 	INNER JOIN specialite s ON p.id_specialite = s.id_specialite
 	ORDER BY l.nom_lieu,  p.nom_personnage
 
-3.a
-
-	SELECT p.nom_personnage , p.adresse_personnage, l.nom_lieu, s.nom_specialite
-	FROM personnage p, lieu l , specialite s 
-	WHERE p.id_lieu = l.id_lieu AND p.id_specialite = s.id_specialite
-	ORDER BY l.nom_lieu,  p.nom_personnage
-
 4. "Nom des spécialités avec nombre de personnages par spécialité (trié par nombre de personnages décroissant)" :
 
     SELECT s.nom_specialite, COUNT(p.nom_personnage) as NbPersonnages
@@ -55,15 +48,11 @@
 
 7. "Nom des ingrédients + coût + quantité de chaque ingrédient qui composent la potion 'Santé'." :
 
-	SELECT i.nom_ingredient, c.qte , i.cout_ingredient
-	FROM potion p, composer c, ingredient i
-	Where p.nom_potion = "Santé" AND c.id_ingredient = i.id_ingredient AND c.id_potion = p.id_potion
-	
-7.a	SELECT i.nom_ingredient, c.qte , i.cout_ingredient
+    SELECT i.nom_ingredient, c.qte , i.cout_ingredient
 	FROM potion p
 	INNER JOIN composer c ON c.id_potion = p.id_potion
 	INNER JOIN ingredient i ON c.id_ingredient = i.id_ingredient
-	Where p.nom_potion = "Santé"
+	Where p.id_potion = 3
 	
 8.  "Nom du ou des personnages qui ont pris le plus de casques dans la bataille 'Bataille du village gaulois'." :
    
@@ -101,11 +90,11 @@
 
 12. "Nom des potions dont un des ingrédients est le poisson frais" :
 
-	SELECT p.nom_potion
+    SELECT p.nom_potion
 	FROM potion p
 	INNER JOIN composer c ON p.id_potion = c.id_potion
 	INNER JOIN ingredient i ON c.id_ingredient = i.id_ingredient
-	WHERE i.nom_ingredient = "Poisson frais"		
+	WHERE i.id_ingredient = 24	
 
 13. "Nom du / des lieu(x) possédant le plus d'habitants, en dehors du village gaulois." :
 
