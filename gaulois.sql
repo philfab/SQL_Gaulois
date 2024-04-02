@@ -8,10 +8,10 @@
 
 2. "Nombre de personnages par lieu (trié par nombre de personnages décroissant)" :
 
-	SELECT nom_lieu, COUNT(personnage.id_lieu) as nbPersonnages
+    SELECT nom_lieu, COUNT(personnage.id_lieu) as nbPersonnages
 	FROM lieu
 	INNER JOIN personnage ON personnage.id_lieu = lieu.id_lieu
-	GROUP BY lieu.nom_lieu
+	GROUP BY lieu.id_lieu
 	ORDER BY nbPersonnages DESC
 
 3. "Nom des personnages + spécialité + adresse et lieu d 'habitation, triés par lieu puis par nom de personnage ":
@@ -31,10 +31,10 @@
 
 4. "Nom des spécialités avec nombre de personnages par spécialité (trié par nombre de personnages décroissant)" :
 
-	SELECT s.nom_specialite, COUNT(p.nom_personnage) as NbPersonnages
+    SELECT s.nom_specialite, COUNT(p.nom_personnage) as NbPersonnages
 	FROM specialite s
 	INNER JOIN personnage p ON s.id_specialite = p.id_specialite
-	GROUP BY s.nom_specialite
+	GROUP BY s.id_specialite 
 	ORDER BY NbPersonnages DESC
 	
 5. "Nom, date et lieu des batailles, classées de la plus récente à la plus ancienne (dates affichées au format jj/mm/aaaa) ":
@@ -50,7 +50,7 @@
 	FROM composer c
 	INNER JOIN potion p ON c.id_potion = p.id_potion
 	INNER JOIN ingredient i ON c.id_ingredient = i.id_ingredient
-	GROUP BY p.nom_potion
+	GROUP BY p.id_potion
 	ORDER BY cout_total DESC
 
 7. "Nom des ingrédients + coût + quantité de chaque ingrédient qui composent la potion 'Santé'." :
@@ -72,7 +72,7 @@
 	INNER JOIN prendre_casque pc ON p.id_personnage = pc.id_personnage
 	INNER JOIN bataille b ON b.id_bataille = pc.id_bataille
 	WHERE b.nom_bataille = "Bataille du village gaulois"
-	GROUP BY p.nom_personnage
+	GROUP BY p.id_personnage
 	ORDER BY NbCasques DESC
 
 9.  "Nom des personnages et leur quantité de potion bue (en les classant du plus grand buveur au plus petit)." :
@@ -80,23 +80,23 @@
     SELECT p.nom_personnage, SUM(b.dose_boire) as NBpotionBue
 	FROM personnage p
 	INNER JOIN boire b ON p.id_personnage = b.id_personnage
-	GROUP BY p.nom_personnage
+	GROUP BY p.id_personnage
 	ORDER BY NBpotionBue DESC
 	
 10. "Nom de la bataille où le nombre de casques pris a été le plus important." :
     
-	SELECT b.nom_bataille, SUM(pc.qte) as nbCasques
+    SELECT b.nom_bataille, SUM(pc.qte) as nbCasques
 	FROM bataille b
 	INNER JOIN prendre_casque pc ON b.id_bataille = pc.id_bataille
-	GROUP BY b.nom_bataille
+	GROUP BY b.id_bataille
 	ORDER BY nbCasques DESC
 
 11. "Combien existe-t-il de casques de chaque type et quel est leur coût total ? (classés par nombre décroissant)" :
 
-	SELECT tc.nom_type_casque, COUNT(c.nom_casque) as nb_type_casques, SUM(c.cout_casque) as coup_casques
+    SELECT tc.nom_type_casque, COUNT(c.nom_casque) as nb_type_casques, SUM(c.cout_casque) as coup_casques
 	FROM casque c
-	JOIN type_casque tc ON c.id_type_casque = tc.id_type_casque
-	GROUP BY tc.nom_type_casque
+	INNER JOIN type_casque tc ON c.id_type_casque = tc.id_type_casque
+	GROUP BY tc.id_type_casque
 	ORDER BY nb_type_casques DESC
 
 12. "Nom des potions dont un des ingrédients est le poisson frais" :
