@@ -146,3 +146,10 @@ E. "La potion 'Soupe' ne doit plus contenir de persil." :
     DELETE 
 	FROM composer 
 	WHERE (id_ingredient = 19 AND id_potion = 9)
+
+F. " Obélix s'est trompé : ce sont 42 casques Weisenau, et non Ostrogoths, 
+     qu'il a pris lors de la bataille 'Attaque de la banque postale'. Corrigez son erreur ! " :
+
+	UPDATE prendre_casque
+	SET prendre_casque.id_casque = 10 , prendre_casque.qte = 42
+	WHERE prendre_casque.id_personnage = 5 AND prendre_casque.id_bataille = 9
